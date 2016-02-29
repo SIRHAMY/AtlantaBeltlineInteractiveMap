@@ -27,7 +27,7 @@
         .clipAngle(180)
         // Size of the map itself, you may want to play around with this in
         // relation to your canvas size
-        .scale(111500)
+        .scale(121500)
         // Center the map in the middle of the canvas
         .translate([width / 2, height / 2])
         .precision(0.1);
@@ -41,8 +41,16 @@
           .datum(feature.geometry)
           .attr("class", "feature")
           .attr("d", path)
-          .style("fill", function(d, i) { return '#000000' });
+          .style("fill", function(d, i) { return '#FFFFFF' })
+          .attr('stroke', function(d) {return '#000000'});
       });
+
+      svg.selectAll("text")
+        .data(data.features)
+        .enter()
+        .append("text")
+        .attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"})
+        .text(function(d) { return d.properties.NPU; });
 });
   </script>
 </body>

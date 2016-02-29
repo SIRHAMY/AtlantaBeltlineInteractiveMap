@@ -31,6 +31,9 @@ df = df[df.year >= 2010];
 
 df = df.sort(['year', 'npu']);
 
+df = df.reset_index();
+del df['index'];
+
 #df = df[pattern.match(df.npu.str)];
 
 #print list(df.index.values);

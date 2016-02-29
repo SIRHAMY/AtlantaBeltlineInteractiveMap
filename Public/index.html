@@ -3,6 +3,7 @@
   <title>Atlanta Beltline</title>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script src="https://code.jquery.com/jquery-2.2.1.min.js" charset="utf-8"></script>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body>
 
@@ -18,7 +19,7 @@
       .attr("height", height);
 
       // Normally you'd look this up. This point is in the middle of Syria
-    var center = [-84.43231544509, 33.7851430688];
+    var center = [-84.43231544509, 33.65];
 
     // Instantiate the projection object
     var projection = d3.geo.conicConformal()
@@ -26,7 +27,7 @@
         .clipAngle(180)
         // Size of the map itself, you may want to play around with this in
         // relation to your canvas size
-        .scale(100000)
+        .scale(111500)
         // Center the map in the middle of the canvas
         .translate([width / 2, height / 2])
         .precision(0.1);

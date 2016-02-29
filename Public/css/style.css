@@ -1,1 +1,3 @@
-#map { height: 500px; }
+#map { transform: rotate(-45deg);
+  position: fixed;
+  top: 0%;}

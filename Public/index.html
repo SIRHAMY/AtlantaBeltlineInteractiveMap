@@ -35,6 +35,114 @@
         // Assign the projection to a path
     var path = d3.geo.path().projection(projection);
 
+    var quantize = d3.scale.quantize()
+        .domain([-3000, 3000])
+        //.range(d3.range(11).map(function(i) { return "q" + i + "-11" ;}));
+        .range(d3.range(11).map(function(i) {
+          var result;
+          switch(i){
+            case 0:
+              result = "#005EBF";
+              break;
+            case 1:
+              result = "#1654B0";
+              break;
+            case 2:
+              result = "#2D4BA2";
+              break;
+            case 3:
+              result = "#444193";
+              break;
+            case 4:
+              result = "#5B3885";
+              break;
+            case 5:
+              result = "#722F76";
+              break;
+            case 6:
+              result = "#892568";
+              break;
+            case 7:
+              result = "#A01C59";
+              break;
+            case 8:
+              result = "#B7124B";
+              break;
+            case 9:
+              result = "#CE093C";
+              break;
+            case 10:
+              result = "#E5002E";
+              break;
+            default:
+              result = "#FF0000";
+          }
+
+          console.log("DEBUG: Quantized, result = " + result);
+
+          return result;
+        }));
+
+    //var crimeChange = d3.map();
+
+    /*
+    queue()
+      .defer(d3.csv, "rsrc/NPUCrimeChange.csv", function(d) {
+          crimeChange.set(d.year, d.NPU, +d.change); })
+      .await(ready);
+      */
+
+      /*
+    d3.csv("rsrc/NPUCrimeChange.csv", function(d) {
+      crimeChange.set(d.year, d.NPU, +d.change);
+    }).await(ready);
+    */
+
+    var selectedYear = 2011;
+
+    d3.csv("rsrc/NPUCrimeChange.csv", function(err, crimeChangeData) {
+        //var crimeChange = d3.map();
+        //crimeChange.set(crimeChangeData.year, crimeChangeData.NPU, +crimeChangeData.change);
+        var crimeChange = {};
+
+        for(y = 2011; y<=2016; y++) {
+          crimeChange[y] = {};
+
+          crimeChangeData.forEach(function(d) {
+            if(d.year == y) crimeChange[y][d.NPU] = +d.change;
+          });
+        }
+
+        console.log("DEBUG: crimeChange");
+        console.log(crimeChange);
+
+        d3.json("rsrc/NPUs.json", function(err, data) {
+          $.each(data.features, function(i, feature) {
+            svg.append("path")
+              .datum(feature.geometry)
+              .attr("class", "feature")
+              .attr("d", path)
+              //.style("fill", function(d, i) { return '#FFFFFF' })
+              .style("fill", function(d, i) {
+                var result = quantize(crimeChange[selectedYear][d.NPU])
+                console.log("DEBUG: FillAttr: result = " + result);
+                return result})
+              //.style("fill", function(d, i) {return quantize(crimeChange.get(selectedYear, d.NPU))})
+              //.attr("class", function(d) { return quantize( crimeChange.get(selectedYear, d.NPU) ) })
+              //.attr('stroke', function(d) {return '#000000'});
+          });
+
+          svg.selectAll("text")
+            .data(data.features)
+            .enter()
+            .append("text")
+            .attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"})
+            //.attr("transform", function (d) { return "rotate(-45)" })
+            .text(function(d) { return d.properties.NPU; });
+          });
+    });
+
+    /*
     d3.json("rsrc/NPUs.json", function(err, data) {
       $.each(data.features, function(i, feature) {
         svg.append("path")
@@ -42,6 +150,7 @@
           .attr("class", "feature")
           .attr("d", path)
           .style("fill", function(d, i) { return '#FFFFFF' })
+          .attr("class", function(d) { return quantize.crimeChange.get(selectedYear, d.NPU)})
           .attr('stroke', function(d) {return '#000000'});
       });
 
@@ -50,8 +159,10 @@
         .enter()
         .append("text")
         .attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"})
+        //.attr("transform", function (d) { return "rotate(-45)" })
         .text(function(d) { return d.properties.NPU; });
-});
+      });
+      */
   </script>
 </body>
 </html>

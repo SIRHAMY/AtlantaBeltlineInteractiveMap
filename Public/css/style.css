@@ -1,3 +1,49 @@
-#map { transform: rotate(-45deg);
+#map {
+  transform: rotate(-45deg);
   position: fixed;
-  top: 0%;}
+  top: 0%;
+}
+
+.q0-11 {
+  fill: #005EBF;
+}
+
+.q1-11 {
+  fill: #1654B0;
+}
+
+.q2-11 {
+  fill: #2D4BA2;
+}
+
+.q3-11 {
+  fill: #444193;
+}
+
+.q4-11 {
+  fill: #5B3885;
+}
+
+.q5-11 {
+  fill: #722F76;
+}
+
+.q6-11 {
+  fill: #892568;
+}
+
+.q7-11 {
+  fill: #A01C59;
+}
+
+.q8-11 {
+  fill: #B7124B;
+}
+
+.q9-11 {
+  fill: #CE093C;
+}
+
+.q10-11 {
+  fill: #E5002E;
+}

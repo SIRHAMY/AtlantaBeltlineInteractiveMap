@@ -27,7 +27,7 @@ df = df.reset_index();
 #print seriesBool;
 
 df = df[df.npu.str.len() == 1];
-df = df[df.year >= 2011];
+df = df[df.year >= 2010];
 
 df = df.sort(['year', 'npu']);
 

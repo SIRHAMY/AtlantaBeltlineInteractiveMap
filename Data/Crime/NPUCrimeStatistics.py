@@ -24,9 +24,12 @@ df = df.reset_index();
 #    print(seriesBool.loc(index));
 #    df.drop(df.index[index]);
 
-print seriesBool;
+#print seriesBool;
 
 df = df[df.npu.str.len() == 1];
+df = df[df.year >= 2011];
+
+df = df.sort(['year', 'npu']);
 
 #df = df[pattern.match(df.npu.str)];
 

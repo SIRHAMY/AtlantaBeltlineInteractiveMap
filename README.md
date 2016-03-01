@@ -1,6 +1,8 @@
 *This work was done as part of a class assignment for Georgia Tech's CS4464/6465 Fall 2016 (https://github.com/jacobeisenstein/gt-compj-class/). The opinions expressed here, if any, are solely those of the students working on this assignment and not of the Instructor or Georgia Tech*
 
-On Fusion Tables - Add a Filter by year:
+This is where [I got stuck in D3](http://sirhamy.com/projects/ATLBeltline/)
+
+Slightly better visualization on Fusion Tables - Add a Filter by year to be close to what I wanted:
 
 [Fusion Table](https://www.google.com/fusiontables/DataSource?docid=1RuFVwr39O6xRXmpR3DME--RpOSG9VxPjjaSTTjzo)
 

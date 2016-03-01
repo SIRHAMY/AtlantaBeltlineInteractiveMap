@@ -35,12 +35,22 @@
         // Assign the projection to a path
     var path = d3.geo.path().projection(projection);
 
-    var quantize = d3.scale.quantize()
+    var makePath = function(i, feature, colorBlock) {
+
+      svg.append("path")
+        .datum(feature.geometry)
+        .attr("class", "feature")
+        .attr("d", path)
+        .style("fill", function(d) { return colorBlock })
+    }
+
+    var quantize = function(d, i, feature, callback) {
+      d3.scale.quantize()
         .domain([-3000, 3000])
         //.range(d3.range(11).map(function(i) { return "q" + i + "-11" ;}));
-        .range(d3.range(11).map(function(i) {
+        .range(d3.range(11).map(function(d) {
           var result;
-          switch(i){
+          switch(d){
             case 0:
               result = "#005EBF";
               break;
@@ -80,8 +90,15 @@
 
           console.log("DEBUG: Quantized, result = " + result);
 
-          return result;
+          if(callback) {
+            console.log("DEBUG: In the callback");
+            callback(i, feature, result);
+          } else {
+            console.log("DEBUG: Callback not a thing");
+            console.log(callback);
+          }
         }));
+      }
 
     //var crimeChange = d3.map();
 
@@ -118,15 +135,27 @@
 
         d3.json("rsrc/NPUs.json", function(err, data) {
           $.each(data.features, function(i, feature) {
+
+            quantize(crimeChange[selectedYear][i.NPU], i, feature, makePath);
+
+            /*
             svg.append("path")
               .datum(feature.geometry)
               .attr("class", "feature")
               .attr("d", path)
               //.style("fill", function(d, i) { return '#FFFFFF' })
               .style("fill", function(d, i) {
-                var result = quantize(crimeChange[selectedYear][d.NPU])
-                console.log("DEBUG: FillAttr: result = " + result);
-                return result})
+
+                var result = [];
+                result.push( quantize(crimeChange[selectedYear][d.NPU]) );
+                $.when.apply($, result)
+                  .then( function() {
+                    console.log("DEBUG: FillAttr: result = " + result[0]);
+                    console.log(result);
+                    return result[0];
+                  });
+              })
+              */
               //.style("fill", function(d, i) {return quantize(crimeChange.get(selectedYear, d.NPU))})
               //.attr("class", function(d) { return quantize( crimeChange.get(selectedYear, d.NPU) ) })
               //.attr('stroke', function(d) {return '#000000'});

@@ -51,7 +51,7 @@ var getCrimeChange = function(selectedYear, NPU) {
   return crimeChange[+selectedYear][NPU.charCodeAt(0) - 65];
 }
 
-d3.csv("rsrc/NPUCrimeChange.csv", function(err, crimeChangeData) {
+d3.csv("./rsrc/NPUCrimeChange.csv", function(err, crimeChangeData) {
   
   crimeChangeData.forEach( function(row) {
       if(!crimeChange[+row.year]) crimeChange[+row.year] = {};
@@ -63,7 +63,7 @@ d3.csv("rsrc/NPUCrimeChange.csv", function(err, crimeChangeData) {
 });
 
 var renderMap = function() {
-  d3.json("/rsrc/dNPUOut.json", function(error, us) {
+  d3.json("./rsrc/dNPUOut.json", function(error, us) {
     if (error) throw error;
 
     console.log("NPU");

@@ -1,41 +1,31 @@
-//Initialize value params
-var MAP_WIDTH = 1000;
-var MAP_HEIGHT = 1000;
-var CENTER = [-84.43231544509, 33.65];
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+  <title>The Beltline and the City</title>
 
-var svg = d3.select("map")
-  .append("svg")
-  .attr("width", MAP_WIDTH)
-  .attr("height", MAP_HEIGHT);
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script src="//d3js.org/topojson.v1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script src="js/beltline.js"></script>
 
-var projection = d3.geo.conicConformal()
-  .center(CENTER)
-  .scale(121500)
-  .translate([MAP_WIDTH/2, MAP_HEIGHT/2])
-  .precision(0.1);
+  <div class="interactive">
+    <div class="button-container">
+      <button type="button" onClick="changeYear(2011)">2011</button>
+      <button type="button" onClick="changeYear(2012)">2012</button>
+      <button type="button" onClick="changeYear(2013)">2013</button>
+      <button type="button" onClick="changeYear(2014)">2014</button>
+      <button type="button" onClick="changeYear(2015)">2015</button>
+      <button type="button" onClick="changeYear(2016)">2016</button>
+    </div>
+    <div id="selectedYear" class="page-info">
 
-var path = d3.geo.path()
-      .projection(projection);
+    </div>
+  </div>
 
-var counter = 0;
-//Test the ability to change NPU colors
-var getColors = function() {
-  counter++;
-  if(counter % 2 === 0) {
-    console.log("Red");
-    return "red";
-  }
-  else {
-    console.log("Blue");
-    return "blue";
-  }
-}
-
-d3.json("rsrc/NPUs.json", function(err, json) {
-  
-  svg.selectAll("path").data(json.features)
-    .enter()
-      .append()
-        .attr("d", path)
-        .style("fill", getColors);
-});
+  <script>
+  </script>
+</body>
+</html>

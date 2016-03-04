@@ -1,10 +1,15 @@
 var MAP_WIDTH = 1000;
 var MAP_HEIGHT = 1000;
 var CENTER = [-84.43231544509, 33.65];
+var selectedYear = 2012;
 
-var fill = d3.scale.log()
-    .domain([10, 500])
-    .range(["brown", "steelblue"]);
+
+var fill = d3.scale.linear()
+    .domain([-500, 0, 250])
+    .range(["steelblue", "black", "brown"]);
+
+
+//var fill = 
 
 var projection = d3.geo.mercator().center(CENTER)
   .scale(100000)
@@ -31,18 +36,38 @@ var getColors = function() {
   }
 }
 
-d3.json("/rsrc/cNPUOut.json", function(error, us) {
+var crimeChange = {};
+
+var getCrimeChange = function(selectedYear, NPU) {
+  return crimeChange[+selectedYear][NPU.charCodeAt(0) - 65];
+}
+
+d3.csv("rsrc/NPUCrimeChange.csv", function(err, crimeChangeData) {
+  
+  crimeChangeData.forEach( function(row) {
+      if(!crimeChange[+row.year]) crimeChange[+row.year] = {};
+      crimeChange[+row.year][row.NPU.charCodeAt(0) - 65] = {};
+      crimeChange[+row.year][row.NPU.charCodeAt(0) - 65] = +row.change;
+  });
+
+  d3.json("/rsrc/dNPUOut.json", function(error, us) {
   if (error) throw error;
 
   console.log("NPU");
   console.log(us);
 
+  console.log("crimeChange");
+  console.log(crimeChange);
+
+  console.log("CrimeChange: 2011 - B: " + getCrimeChange(2011, 'B'));
+
   svg.append("g")
       .attr("class", "NPU")
     .selectAll("path")
-      .data(topojson.feature(us, us.objects.cNPUs).features)
+      .data(topojson.feature(us, us.objects.dNPUs).features)
     .enter().append("path")
       .attr("d", path)
-      .style("fill", function(d) { return getColors(); });
+      .style("fill", function(d) { return fill(crimeChange[selectedYear][d.properties.NPU.charCodeAt(0) - 65]); });
 
+});
 });

@@ -1,197 +1,38 @@
-<html>
+<!DOCTYPE html>
+<meta charset="utf-8">
 <head>
-  <title>Atlanta Beltline</title>
-  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <script src="https://code.jquery.com/jquery-2.2.1.min.js" charset="utf-8"></script>
-  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <title>The Beltline and the City</title>
+
+  <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script src="//d3js.org/topojson.v1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+  <script src="https://cdnjs.com/libraries/d3-legend"></script>
+  <script src="js/beltline.js"></script>
+  
+  <img class="beltline-map" src=rsrc/BeltlineConstruction.png>
+  <img class="beltline-map" src=rsrc/BeltlineAuxillary.png>
+  <img class="beltline-map" src=rsrc/BeltlineCompleted.png>
 
-  <div id="map"></div>
+  <div class="interactive">
+    <div class="button-container">
+      <button type="button" onClick="changeYear(2011)">2011</button>
+      <button type="button" onClick="changeYear(2012)">2012</button>
+      <button type="button" onClick="changeYear(2013)">2013</button>
+      <button type="button" onClick="changeYear(2014)">2014</button>
+      <button type="button" onClick="changeYear(2015)">2015</button>
+      <button type="button" onClick="changeYear(2016)">2016</button>
+    </div>
+    <div id="selectedYear" class="page-info">
+
+    </div>
+  </div>
+
+  <img style="float: right;" src="rsrc/MapLegend.png">
 
   <script>
-    // Size of the canvas on which the map will be rendered
-  var width = 1000,
-    height = 1100,
-    // SVG element as a JavaScript object that we can manipulate later
-    svg = d3.select("#map").append("svg")
-      .attr("width", width)
-      .attr("height", height);
-
-      // Normally you'd look this up. This point is in the middle of Syria
-    var center = [-84.43231544509, 33.65];
-
-    // Instantiate the projection object
-    var projection = d3.geo.conicConformal()
-        .center(center)
-        .clipAngle(180)
-        // Size of the map itself, you may want to play around with this in
-        // relation to your canvas size
-        .scale(121500)
-        // Center the map in the middle of the canvas
-        .translate([width / 2, height / 2])
-        .precision(0.1);
-
-        // Assign the projection to a path
-    var path = d3.geo.path().projection(projection);
-
-    var makePath = function(i, feature, colorBlock) {
-
-      svg.append("path")
-        .datum(feature.geometry)
-        .attr("class", "feature")
-        .attr("d", path)
-        .style("fill", function(d) { return colorBlock })
-    }
-
-    var quantize = function(d, i, feature, callback) {
-      d3.scale.quantize()
-        .domain([-3000, 3000])
-        //.range(d3.range(11).map(function(i) { return "q" + i + "-11" ;}));
-        .range(d3.range(11).map(function(d) {
-          var result;
-          switch(d){
-            case 0:
-              result = "#005EBF";
-              break;
-            case 1:
-              result = "#1654B0";
-              break;
-            case 2:
-              result = "#2D4BA2";
-              break;
-            case 3:
-              result = "#444193";
-              break;
-            case 4:
-              result = "#5B3885";
-              break;
-            case 5:
-              result = "#722F76";
-              break;
-            case 6:
-              result = "#892568";
-              break;
-            case 7:
-              result = "#A01C59";
-              break;
-            case 8:
-              result = "#B7124B";
-              break;
-            case 9:
-              result = "#CE093C";
-              break;
-            case 10:
-              result = "#E5002E";
-              break;
-            default:
-              result = "#FF0000";
-          }
-
-          console.log("DEBUG: Quantized, result = " + result);
-
-          if(callback) {
-            console.log("DEBUG: In the callback");
-            callback(i, feature, result);
-          } else {
-            console.log("DEBUG: Callback not a thing");
-            console.log(callback);
-          }
-        }));
-      }
-
-    //var crimeChange = d3.map();
-
-    /*
-    queue()
-      .defer(d3.csv, "rsrc/NPUCrimeChange.csv", function(d) {
-          crimeChange.set(d.year, d.NPU, +d.change); })
-      .await(ready);
-      */
-
-      /*
-    d3.csv("rsrc/NPUCrimeChange.csv", function(d) {
-      crimeChange.set(d.year, d.NPU, +d.change);
-    }).await(ready);
-    */
-
-    var selectedYear = 2011;
-
-    d3.csv("rsrc/NPUCrimeChange.csv", function(err, crimeChangeData) {
-        //var crimeChange = d3.map();
-        //crimeChange.set(crimeChangeData.year, crimeChangeData.NPU, +crimeChangeData.change);
-        var crimeChange = {};
-
-        for(y = 2011; y<=2016; y++) {
-          crimeChange[y] = {};
-
-          crimeChangeData.forEach(function(d) {
-            if(d.year == y) crimeChange[y][d.NPU] = +d.change;
-          });
-        }
-
-        console.log("DEBUG: crimeChange");
-        console.log(crimeChange);
-
-        d3.json("rsrc/NPUs.json", function(err, data) {
-          $.each(data.features, function(i, feature) {
-
-            quantize(crimeChange[selectedYear][i.NPU], i, feature, makePath);
-
-            /*
-            svg.append("path")
-              .datum(feature.geometry)
-              .attr("class", "feature")
-              .attr("d", path)
-              //.style("fill", function(d, i) { return '#FFFFFF' })
-              .style("fill", function(d, i) {
-
-                var result = [];
-                result.push( quantize(crimeChange[selectedYear][d.NPU]) );
-                $.when.apply($, result)
-                  .then( function() {
-                    console.log("DEBUG: FillAttr: result = " + result[0]);
-                    console.log(result);
-                    return result[0];
-                  });
-              })
-              */
-              //.style("fill", function(d, i) {return quantize(crimeChange.get(selectedYear, d.NPU))})
-              //.attr("class", function(d) { return quantize( crimeChange.get(selectedYear, d.NPU) ) })
-              //.attr('stroke', function(d) {return '#000000'});
-          });
-
-          svg.selectAll("text")
-            .data(data.features)
-            .enter()
-            .append("text")
-            .attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"})
-            //.attr("transform", function (d) { return "rotate(-45)" })
-            .text(function(d) { return d.properties.NPU; });
-          });
-    });
-
-    /*
-    d3.json("rsrc/NPUs.json", function(err, data) {
-      $.each(data.features, function(i, feature) {
-        svg.append("path")
-          .datum(feature.geometry)
-          .attr("class", "feature")
-          .attr("d", path)
-          .style("fill", function(d, i) { return '#FFFFFF' })
-          .attr("class", function(d) { return quantize.crimeChange.get(selectedYear, d.NPU)})
-          .attr('stroke', function(d) {return '#000000'});
-      });
-
-      svg.selectAll("text")
-        .data(data.features)
-        .enter()
-        .append("text")
-        .attr("transform", function (d) { return "translate(" + path.centroid(d) + ")"})
-        //.attr("transform", function (d) { return "rotate(-45)" })
-        .text(function(d) { return d.properties.NPU; });
-      });
-      */
   </script>
 </body>
 </html>
